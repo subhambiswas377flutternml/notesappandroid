@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="start_banner_svg">images/start_banner.svg</string>
+    <string name="notely_name">images/notely.svg</string>
+</resources>
