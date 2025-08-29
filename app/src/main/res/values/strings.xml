@@ -2,4 +2,6 @@
     <string name="app_name">NoteX</string>
     <string name="banner_title">World’s Safest And\nLargest Digital Notebook</string>
     <string name="banner_description">Notely is the world’s safest, largest\nand intelligent digital notebook. Join over\n10M+ users already using Notely.</string>
+    <string name="proceed_description">Add a note about anything (your thoughts)\non climate change, or your history essay)\nand share it witht the world.</string>
+    <string name="auth_note">Join Notely for free. Create and share\nunlimited notes with your friends.</string>
 </resources>

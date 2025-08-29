@@ -2,4 +2,7 @@
 <resources>
     <string name="start_banner_svg">images/start_banner.svg</string>
     <string name="notely_name">images/notely.svg</string>
+    <string name="stepper_banner">images/stepper_banner.svg</string>
+    <string name="search_icon">icons/search_icon.svg</string>
+    <string name="drawer_icon">icons/drawer_icon.svg</string>
 </resources>
