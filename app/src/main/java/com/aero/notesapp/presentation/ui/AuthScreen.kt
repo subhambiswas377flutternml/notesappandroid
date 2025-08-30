@@ -25,18 +25,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.aero.notesapp.R
 import com.aero.notesapp.Routes
 import com.aero.notesapp.core.AuthMode
+import com.aero.notesapp.core.request.LoginRequest
 import com.aero.notesapp.presentation.components.AssetSvgView
 import com.aero.notesapp.presentation.components.CustomInputField
 import com.aero.notesapp.presentation.components.PrimaryButton
 import com.aero.notesapp.presentation.components.PrimaryTextButton
+import com.aero.notesapp.presentation.viewmodel.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AuthScrreen(navController: NavHostController, authMode: AuthMode){
+
+    val authViewModel: AuthViewModel = hiltViewModel<AuthViewModel>()
+
     val nameController: MutableState<String> = rememberSaveable {mutableStateOf<String>(value = "")}
     val emailController: MutableState<String> = rememberSaveable{ mutableStateOf<String>(value = "") }
     val passwordController: MutableState<String> = remember { mutableStateOf<String>(value = "") }
@@ -64,16 +70,18 @@ fun AuthScrreen(navController: NavHostController, authMode: AuthMode){
                 textAlign = TextAlign.Center
             )
 
-            if(currentAuthState.value==AuthMode.SignUp)
-            Spacer(modifier = Modifier.height(52.dp))
+            if(currentAuthState.value==AuthMode.SignUp){
+                Spacer(modifier = Modifier.height(52.dp))
+            }
 
-            if(currentAuthState.value==AuthMode.SignUp)
-            CustomInputField(
-                hintText = "John Doe",
-                labelText = "Full Name",
-                controller = nameController,
-                modifier = Modifier.padding(horizontal = 28.dp)
-            )
+            if(currentAuthState.value==AuthMode.SignUp){
+                CustomInputField(
+                    hintText = "John Doe",
+                    labelText = "Full Name",
+                    controller = nameController,
+                    modifier = Modifier.padding(horizontal = 28.dp)
+                )
+            }
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -96,7 +104,10 @@ fun AuthScrreen(navController: NavHostController, authMode: AuthMode){
             Spacer(modifier = Modifier.weight(1f))
 
             PrimaryButton(onClick = {
-                navController.navigate(Routes.HomeRoute)
+               authViewModel.login(loginRequest = LoginRequest(
+                   userName = "alex03",
+                   password = "Abcd@1234",
+               ))
             }, buttonText = if(currentAuthState.value==AuthMode.SignUp) "Create Account" else "Login")
 
             Spacer(modifier = Modifier.height(20.dp))
