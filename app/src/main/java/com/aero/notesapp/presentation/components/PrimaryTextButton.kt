@@ -8,12 +8,14 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.aero.notesapp.R
+import com.aero.notesapp.ui.theme.CustomFontFamily
 
 @Composable
 fun PrimaryTextButton(buttonText:String, onClick:()->Unit){
     Text(text = buttonText,
         fontWeight = FontWeight.ExtraBold,
         fontSize = 16.sp,
+        fontFamily = CustomFontFamily.fontNunito,
         color = colorResource(R.color.secondary),
         modifier = Modifier.clickable {
             onClick()

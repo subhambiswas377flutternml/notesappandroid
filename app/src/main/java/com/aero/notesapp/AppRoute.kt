@@ -10,6 +10,7 @@ import com.aero.notesapp.core.AuthMode
 import com.aero.notesapp.presentation.ui.AuthScrreen
 import com.aero.notesapp.presentation.ui.GetStartedScreen
 import com.aero.notesapp.presentation.ui.HomeScreen
+import com.aero.notesapp.presentation.ui.NotesDetailScreen
 import com.aero.notesapp.presentation.ui.ProceedScreen
 import kotlinx.serialization.Serializable
 
@@ -25,6 +26,9 @@ object Routes{
 
     @Serializable
     data object HomeRoute
+
+    @Serializable
+    data object NotesDetailRoute
 }
 
 @Composable
@@ -47,6 +51,10 @@ fun App(){
 
         composable<Routes.HomeRoute> {
             HomeScreen(navController = navController)
+        }
+
+        composable<Routes.NotesDetailRoute> {
+            NotesDetailScreen(navController = navController)
         }
     }
 }

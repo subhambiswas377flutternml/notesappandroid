@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aero.notesapp.R
+import com.aero.notesapp.ui.theme.CustomFontFamily
 
 @Composable
 fun PrimaryButton(buttonText: String, onClick:()->Unit){
@@ -29,6 +30,7 @@ fun PrimaryButton(buttonText: String, onClick:()->Unit){
         elevation = ButtonDefaults.buttonElevation(0.dp, 3.dp, 0.dp, 0.dp, 0.dp)) {
         Text(text = buttonText,
             fontSize = 20.sp,
-            fontWeight = FontWeight.Black)
+            fontWeight = FontWeight.Black,
+            fontFamily = CustomFontFamily.fontNunito)
     }
 }

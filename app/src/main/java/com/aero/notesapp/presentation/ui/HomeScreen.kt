@@ -68,9 +68,9 @@ fun HomeScreen(navController: NavHostController){
             ){
             items(x){
                 NoteCard(
-                    modifier = Modifier.clickable {  },
                     title = "Emotions of Typography",
-                    description = "Typography is a part of user interface. Many of us focus on User Experience rather than User Interface as a novice UI/UX designer since deciding a typeface, colors, and typefaces is a pain as it takes a lot of..."
+                    description = "Typography is a part of user interface. Many of us focus on User Experience rather than User Interface as a novice UI/UX designer since deciding a typeface, colors, and typefaces is a pain as it takes a lot of...",
+                    navController = navController
                 )
             }
         }
