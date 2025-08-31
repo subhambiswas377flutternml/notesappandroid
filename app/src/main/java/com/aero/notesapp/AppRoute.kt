@@ -12,9 +12,14 @@ import com.aero.notesapp.presentation.ui.GetStartedScreen
 import com.aero.notesapp.presentation.ui.HomeScreen
 import com.aero.notesapp.presentation.ui.NotesDetailScreen
 import com.aero.notesapp.presentation.ui.ProceedScreen
+import com.aero.notesapp.presentation.ui.SplashScreen
 import kotlinx.serialization.Serializable
+import okhttp3.Route
 
 object Routes{
+    @Serializable
+    data object SplashRoute
+
     @Serializable
     data object GetStartedRoute
 
@@ -34,7 +39,11 @@ object Routes{
 @Composable
 fun App(){
     val navController: NavHostController = rememberNavController()
-    NavHost(navController = navController, startDestination = Routes.ProceedRoute) {
+    NavHost(navController = navController, startDestination = Routes.SplashRoute) {
+
+        composable<Routes.SplashRoute> {
+            SplashScreen(navController = navController)
+        }
 
         composable<Routes.GetStartedRoute> {
             GetStartedScreen(navController = navController)

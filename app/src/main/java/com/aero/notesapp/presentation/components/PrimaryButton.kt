@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,7 +18,7 @@ import com.aero.notesapp.R
 import com.aero.notesapp.ui.theme.CustomFontFamily
 
 @Composable
-fun PrimaryButton(buttonText: String, onClick:()->Unit){
+fun PrimaryButton(buttonText: String, onClick:()->Unit, isLoading:Boolean=false){
     ElevatedButton(onClick = {
         onClick()
     },
@@ -28,9 +29,13 @@ fun PrimaryButton(buttonText: String, onClick:()->Unit){
         contentPadding = PaddingValues(vertical = 24.dp),
         shape = RoundedCornerShape(12.dp),
         elevation = ButtonDefaults.buttonElevation(0.dp, 3.dp, 0.dp, 0.dp, 0.dp)) {
-        Text(text = buttonText,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Black,
-            fontFamily = CustomFontFamily.fontNunito)
+        if(isLoading){
+            CircularProgressIndicator(color = colorResource(R.color.tertiary))
+        }else{
+            Text(text = buttonText,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Black,
+                fontFamily = CustomFontFamily.fontNunito)
+        }
     }
 }

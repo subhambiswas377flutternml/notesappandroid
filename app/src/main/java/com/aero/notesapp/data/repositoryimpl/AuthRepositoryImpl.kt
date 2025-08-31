@@ -1,14 +1,33 @@
 package com.aero.notesapp.data.repositoryimpl
 
 import com.aero.notesapp.core.request.LoginRequest
+import com.aero.notesapp.data.datasource.local.AuthLocalDataSource
 import com.aero.notesapp.data.datasource.remote.AuthRemoteDataSource
-import com.aero.notesapp.data.entity.toModel
-import com.aero.notesapp.domain.model.AuthModel
+import com.aero.notesapp.data.entity.local.toModel
+import com.aero.notesapp.data.entity.remote.toLocalEntity
+import com.aero.notesapp.domain.model.UserModel
 import com.aero.notesapp.domain.repository.AuthRepository
+import kotlinx.coroutines.flow.firstOrNull
 
-class AuthRepositoryImpl(private val authRemoteDataSource: AuthRemoteDataSource): AuthRepository {
-    override suspend fun login(loginRequest: LoginRequest): AuthModel {
+class AuthRepositoryImpl(private val authRemoteDataSource: AuthRemoteDataSource,
+    private val authLocalDataSource: AuthLocalDataSource): AuthRepository {
+
+    override suspend fun login(loginRequest: LoginRequest): UserModel {
         val authResponse = authRemoteDataSource.login(loginRequest)
-        return authResponse.toModel()
+        if(authResponse.status==200){
+            authLocalDataSource.insert(authResponse.toLocalEntity())
+            return authResponse.toLocalEntity().toModel()
+        }else{
+           throw Exception()
+        }
+    }
+
+    override suspend fun checkAuth():UserModel? {
+        val user = authLocalDataSource.read().firstOrNull()?.firstOrNull()
+        return if(user!=null){
+            user.toModel()
+        }else{
+            null
+        }
     }
 }

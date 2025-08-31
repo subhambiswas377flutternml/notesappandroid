@@ -15,12 +15,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aero.notesapp.R
 
 @Composable
-fun CustomInputField(hintText: String, labelText: String, controller: MutableState<String>, modifier: Modifier=Modifier){
+fun CustomInputField(hintText: String, labelText: String, controller: MutableState<String>,
+                     modifier: Modifier=Modifier, isPassword:Boolean=false){
    Column(modifier = modifier.fillMaxWidth()) {
 
        Text(text = labelText,
@@ -35,6 +38,7 @@ fun CustomInputField(hintText: String, labelText: String, controller: MutableSta
            onValueChange = {
                controller.value=it
            },
+           visualTransformation = if(isPassword) PasswordVisualTransformation() else VisualTransformation.None,
            textStyle = TextStyle(
                color = colorResource(R.color.textBlack),
                fontWeight = FontWeight.Bold,

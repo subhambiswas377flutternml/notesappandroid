@@ -1,5 +1,7 @@
 package com.aero.notesapp.presentation.ui
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +14,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,6 +22,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -26,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.aero.notesapp.R
 import com.aero.notesapp.Routes
@@ -35,7 +40,9 @@ import com.aero.notesapp.presentation.components.AssetSvgView
 import com.aero.notesapp.presentation.components.CustomInputField
 import com.aero.notesapp.presentation.components.PrimaryButton
 import com.aero.notesapp.presentation.components.PrimaryTextButton
+import com.aero.notesapp.presentation.viewmodel.AuthState
 import com.aero.notesapp.presentation.viewmodel.AuthViewModel
+import com.aero.notesapp.presentation.viewmodel.isLoading
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,6 +55,18 @@ fun AuthScrreen(navController: NavHostController, authMode: AuthMode){
     val passwordController: MutableState<String> = remember { mutableStateOf<String>(value = "") }
 
     val currentAuthState: MutableState<AuthMode> = rememberSaveable{ mutableStateOf<AuthMode>(value = authMode) }
+    val appContext: Context = LocalContext.current
+
+    LaunchedEffect(authViewModel.state.value) {
+        when(authViewModel.state.value){
+            is AuthState.Authenticated->{
+                navController.navigate(Routes.HomeRoute)
+            }
+            is AuthState.Error->{
+                Toast.makeText(appContext, "Something went wrong! Check your credentials again", Toast.LENGTH_LONG).show()
+            }else->{}
+        }
+    }
 
     Scaffold(topBar = { CenterAlignedTopAppBar(title = {
         AssetSvgView(imageUrl = stringResource(R.string.notely_name), modifier = Modifier.height(23.dp).width(80.dp))
@@ -98,17 +117,29 @@ fun AuthScrreen(navController: NavHostController, authMode: AuthMode){
                 hintText = "Password",
                 labelText = "Password",
                 controller = passwordController,
-                modifier = Modifier.padding(horizontal = 28.dp)
+                modifier = Modifier.padding(horizontal = 28.dp),
+                isPassword = true
             )
 
             Spacer(modifier = Modifier.weight(1f))
 
             PrimaryButton(onClick = {
-               authViewModel.login(loginRequest = LoginRequest(
-                   userName = "alex03",
-                   password = "Abcd@1234",
-               ))
-            }, buttonText = if(currentAuthState.value==AuthMode.SignUp) "Create Account" else "Login")
+                if(!authViewModel.state.value.isLoading()){
+                   if(currentAuthState.value==AuthMode.Login){
+                       if(emailController.value.trim().isNotEmpty()&&passwordController.value.trim().isNotEmpty()){
+                           authViewModel.login(loginRequest = LoginRequest(
+                               userName = emailController.value.trim(),
+                               password = passwordController.value.trim()
+                           ))
+                       }else{
+                           Toast.makeText(appContext, "Credentials can't be empty", Toast.LENGTH_LONG).show()
+                       }
+                   }else{
+                       // do signup
+                   }
+                }
+            }, buttonText = if(currentAuthState.value==AuthMode.SignUp) "Create Account" else "Login",
+                isLoading = authViewModel.state.value.isLoading())
 
             Spacer(modifier = Modifier.height(20.dp))
 
