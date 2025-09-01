@@ -6,9 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aero.notesapp.core.request.LoginRequest
+import com.aero.notesapp.core.request.SignupRequest
 import com.aero.notesapp.domain.model.UserModel
 import com.aero.notesapp.domain.usecase.CheckAuthUsecase
 import com.aero.notesapp.domain.usecase.LoginUsecase
+import com.aero.notesapp.domain.usecase.SignupUsecase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -36,7 +38,8 @@ fun AuthState.isLoading(): Boolean{
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(private val loginUsecase: LoginUsecase,
-    private val checkAuthUsecase: CheckAuthUsecase): ViewModel(){
+    private val checkAuthUsecase: CheckAuthUsecase,
+    private val signupUsecase: SignupUsecase): ViewModel(){
     private val _state: MutableState<AuthState> = mutableStateOf<AuthState>(value = AuthState.Initial)
     val state: State<AuthState> = _state
 
@@ -70,6 +73,20 @@ class AuthViewModel @Inject constructor(private val loginUsecase: LoginUsecase,
                         _state.value = AuthState.UnAuthenticated
                     }
                 }catch(ex: Exception){
+                    throw ex
+                }
+            }
+        }
+    }
+
+    fun singup(signupRequest: SignupRequest){
+        _state.value = AuthState.Loading
+        viewModelScope.launch(handler) {
+            withContext(Dispatchers.IO){
+                try{
+                    val authResponse = signupUsecase(signupRequest)
+                    _state.value = AuthState.Authenticated(authResponse)
+                }catch(ex:Exception){
                     throw ex
                 }
             }

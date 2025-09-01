@@ -9,6 +9,7 @@ import com.aero.notesapp.data.repositoryimpl.AuthRepositoryImpl
 import com.aero.notesapp.domain.repository.AuthRepository
 import com.aero.notesapp.domain.usecase.CheckAuthUsecase
 import com.aero.notesapp.domain.usecase.LoginUsecase
+import com.aero.notesapp.domain.usecase.SignupUsecase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -62,5 +63,11 @@ object InjectionContainer{
     @Singleton
     fun provideCheckAuthUsecae(authRepository: AuthRepository): CheckAuthUsecase{
         return CheckAuthUsecase(authRepository = authRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSignupUsecase(authRepository: AuthRepository): SignupUsecase{
+        return SignupUsecase(authRepository = authRepository)
     }
 }

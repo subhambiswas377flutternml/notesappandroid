@@ -36,6 +36,7 @@ import com.aero.notesapp.R
 import com.aero.notesapp.Routes
 import com.aero.notesapp.core.AuthMode
 import com.aero.notesapp.core.request.LoginRequest
+import com.aero.notesapp.core.request.SignupRequest
 import com.aero.notesapp.presentation.components.AssetSvgView
 import com.aero.notesapp.presentation.components.CustomInputField
 import com.aero.notesapp.presentation.components.PrimaryButton
@@ -135,7 +136,15 @@ fun AuthScrreen(navController: NavHostController, authMode: AuthMode){
                            Toast.makeText(appContext, "Credentials can't be empty", Toast.LENGTH_LONG).show()
                        }
                    }else{
-                       // do signup
+                       if(emailController.value.trim().isEmpty()||
+                           nameController.value.trim().isEmpty()||
+                           passwordController.value.trim().isEmpty()){
+                           Toast.makeText(appContext, "Signup credentials can't be empty !", Toast.LENGTH_LONG).show()
+                       }else{
+                           authViewModel.singup(SignupRequest(name = nameController.value.trim(),
+                               userName = emailController.value.trim(),
+                               password = passwordController.value.trim()))
+                       }
                    }
                 }
             }, buttonText = if(currentAuthState.value==AuthMode.SignUp) "Create Account" else "Login",
