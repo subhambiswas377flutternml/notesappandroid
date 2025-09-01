@@ -27,9 +27,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.aero.notesapp.R
 import com.aero.notesapp.Routes
+import com.aero.notesapp.domain.model.NotesModel
 
 @Composable
-fun NoteCard(title:String, description: String, navController: NavHostController){
+fun NoteCard(notesModel: NotesModel,
+             navController: NavHostController){
 
     Box(modifier = Modifier
         .width(120.dp)
@@ -41,7 +43,7 @@ fun NoteCard(title:String, description: String, navController: NavHostController
         },
         ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = title,
+            Text(text = notesModel.title,
                 color = colorResource(R.color.textBlack),
                 fontWeight = FontWeight.Black,
                 fontSize = 16.sp
@@ -49,7 +51,7 @@ fun NoteCard(title:String, description: String, navController: NavHostController
 
             Spacer(modifier = Modifier.height(6.dp))
 
-            Text(text = description,
+            Text(text = notesModel.description,
                 fontSize = 14.sp,
                 maxLines = 5,
                 fontWeight = FontWeight.Bold,

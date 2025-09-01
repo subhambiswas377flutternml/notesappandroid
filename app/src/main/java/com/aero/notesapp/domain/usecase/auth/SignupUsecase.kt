@@ -1,4 +1,4 @@
-package com.aero.notesapp.domain.usecase
+package com.aero.notesapp.domain.usecase.auth
 
 import com.aero.notesapp.core.request.SignupRequest
 import com.aero.notesapp.domain.model.UserModel

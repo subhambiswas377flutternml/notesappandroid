@@ -8,9 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.aero.notesapp.core.request.LoginRequest
 import com.aero.notesapp.core.request.SignupRequest
 import com.aero.notesapp.domain.model.UserModel
-import com.aero.notesapp.domain.usecase.CheckAuthUsecase
-import com.aero.notesapp.domain.usecase.LoginUsecase
-import com.aero.notesapp.domain.usecase.SignupUsecase
+import com.aero.notesapp.domain.usecase.auth.CheckAuthUsecase
+import com.aero.notesapp.domain.usecase.auth.LoginUsecase
+import com.aero.notesapp.domain.usecase.auth.SignupUsecase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -36,10 +36,21 @@ fun AuthState.isLoading(): Boolean{
     }
 }
 
+fun AuthState.userId(): Int?{
+    when(this){
+        is AuthState.Authenticated->{
+            return this.userId()
+        }else->{
+            return null
+        }
+    }
+}
+
 @HiltViewModel
 class AuthViewModel @Inject constructor(private val loginUsecase: LoginUsecase,
-    private val checkAuthUsecase: CheckAuthUsecase,
-    private val signupUsecase: SignupUsecase): ViewModel(){
+                                        private val checkAuthUsecase: CheckAuthUsecase,
+                                        private val signupUsecase: SignupUsecase
+): ViewModel(){
     private val _state: MutableState<AuthState> = mutableStateOf<AuthState>(value = AuthState.Initial)
     val state: State<AuthState> = _state
 

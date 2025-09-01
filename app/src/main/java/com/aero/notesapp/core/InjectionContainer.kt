@@ -4,12 +4,18 @@ import android.content.Context
 import androidx.room.Room
 import com.aero.notesapp.core.localdb.LocalDbClient
 import com.aero.notesapp.data.datasource.local.AuthLocalDataSource
+import com.aero.notesapp.data.datasource.local.NotesLocalDataSource
 import com.aero.notesapp.data.datasource.remote.AuthRemoteDataSource
+import com.aero.notesapp.data.datasource.remote.NotesRemoteDataSource
+import com.aero.notesapp.data.entity.remote.NotesResponseDto
 import com.aero.notesapp.data.repositoryimpl.AuthRepositoryImpl
+import com.aero.notesapp.data.repositoryimpl.NotesRepositoryImpl
 import com.aero.notesapp.domain.repository.AuthRepository
-import com.aero.notesapp.domain.usecase.CheckAuthUsecase
-import com.aero.notesapp.domain.usecase.LoginUsecase
-import com.aero.notesapp.domain.usecase.SignupUsecase
+import com.aero.notesapp.domain.repository.NotesRepository
+import com.aero.notesapp.domain.usecase.auth.CheckAuthUsecase
+import com.aero.notesapp.domain.usecase.auth.LoginUsecase
+import com.aero.notesapp.domain.usecase.auth.SignupUsecase
+import com.aero.notesapp.domain.usecase.notes.GetNotesByUserUsecase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -55,19 +61,44 @@ object InjectionContainer{
 
     @Provides
     @Singleton
-    fun provideLoginUsecase(authRepository: AuthRepository): LoginUsecase{
+    fun provideLoginUsecase(authRepository: AuthRepository): LoginUsecase {
         return LoginUsecase(authRepository)
     }
 
     @Provides
     @Singleton
-    fun provideCheckAuthUsecae(authRepository: AuthRepository): CheckAuthUsecase{
+    fun provideCheckAuthUsecae(authRepository: AuthRepository): CheckAuthUsecase {
         return CheckAuthUsecase(authRepository = authRepository)
     }
 
     @Provides
     @Singleton
-    fun provideSignupUsecase(authRepository: AuthRepository): SignupUsecase{
+    fun provideSignupUsecase(authRepository: AuthRepository): SignupUsecase {
         return SignupUsecase(authRepository = authRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideNotesRemoteDataSource(retrofit: Retrofit): NotesRemoteDataSource{
+        return retrofit.create(NotesRemoteDataSource::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideNotesLocalDataSource(localDbClient: LocalDbClient): NotesLocalDataSource{
+        return localDbClient.initNotesDb()
+    }
+
+    @Provides
+    @Singleton
+    fun provideNotesRepository(notesRemoteDataSource: NotesRemoteDataSource,
+                               notesLocalDataSource: NotesLocalDataSource): NotesRepository{
+        return NotesRepositoryImpl(notesRemoteDataSource = notesRemoteDataSource, notesLocalDataSource = notesLocalDataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetNotesByUserUseCase(notesRepository: NotesRepository): GetNotesByUserUsecase{
+        return GetNotesByUserUsecase(notesRepository = notesRepository)
     }
 }

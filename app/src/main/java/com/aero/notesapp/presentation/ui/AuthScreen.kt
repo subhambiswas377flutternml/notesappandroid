@@ -107,7 +107,7 @@ fun AuthScrreen(navController: NavHostController, authMode: AuthMode){
 
             CustomInputField(
                 hintText = "abc@xyz.com",
-                labelText = "Email Address",
+                labelText = "Username",
                 controller = emailController,
                 modifier = Modifier.padding(horizontal = 28.dp)
             )
