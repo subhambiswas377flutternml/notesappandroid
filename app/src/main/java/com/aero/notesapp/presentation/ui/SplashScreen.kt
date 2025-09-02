@@ -20,7 +20,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.aero.notesapp.R
 import com.aero.notesapp.Routes
@@ -29,9 +28,7 @@ import com.aero.notesapp.presentation.viewmodel.AuthState
 import com.aero.notesapp.presentation.viewmodel.AuthViewModel
 
 @Composable
-fun SplashScreen(navController:NavHostController){
-
-    val authViewModel: AuthViewModel = hiltViewModel<AuthViewModel>()
+fun SplashScreen(navController:NavHostController, authViewModel: AuthViewModel){
     val context: Context = LocalContext.current
 
     LaunchedEffect(Unit) {

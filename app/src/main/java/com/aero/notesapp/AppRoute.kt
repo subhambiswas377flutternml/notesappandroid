@@ -1,6 +1,7 @@
 package com.aero.notesapp
 
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -13,6 +14,8 @@ import com.aero.notesapp.presentation.ui.HomeScreen
 import com.aero.notesapp.presentation.ui.NotesDetailScreen
 import com.aero.notesapp.presentation.ui.ProceedScreen
 import com.aero.notesapp.presentation.ui.SplashScreen
+import com.aero.notesapp.presentation.viewmodel.AuthViewModel
+import com.aero.notesapp.presentation.viewmodel.NotesViewModel
 import kotlinx.serialization.Serializable
 import okhttp3.Route
 
@@ -38,11 +41,15 @@ object Routes{
 
 @Composable
 fun App(){
+
+    val authViewModel: AuthViewModel = hiltViewModel<AuthViewModel>()
+    val notesViewModel: NotesViewModel = hiltViewModel<NotesViewModel>()
+
     val navController: NavHostController = rememberNavController()
     NavHost(navController = navController, startDestination = Routes.SplashRoute) {
 
         composable<Routes.SplashRoute> {
-            SplashScreen(navController = navController)
+            SplashScreen(navController = navController, authViewModel = authViewModel)
         }
 
         composable<Routes.GetStartedRoute> {
@@ -55,11 +62,11 @@ fun App(){
 
         composable<Routes.AuthRoute> {backStackEntry->
             val args = backStackEntry.toRoute<Routes.AuthRoute>()
-            AuthScrreen(navController=navController, authMode = args.authMode)
+            AuthScrreen(navController=navController, authMode = args.authMode, authViewModel = authViewModel)
         }
 
         composable<Routes.HomeRoute> {
-            HomeScreen(navController = navController)
+            HomeScreen(navController = navController, authViewModel=authViewModel, notesViewModel = notesViewModel)
         }
 
         composable<Routes.NotesDetailRoute> {

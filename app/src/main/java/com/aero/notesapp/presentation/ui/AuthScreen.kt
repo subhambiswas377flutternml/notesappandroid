@@ -29,8 +29,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.aero.notesapp.R
 import com.aero.notesapp.Routes
@@ -47,9 +45,7 @@ import com.aero.notesapp.presentation.viewmodel.isLoading
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AuthScrreen(navController: NavHostController, authMode: AuthMode){
-
-    val authViewModel: AuthViewModel = hiltViewModel<AuthViewModel>()
+fun AuthScrreen(navController: NavHostController, authMode: AuthMode, authViewModel: AuthViewModel){
 
     val nameController: MutableState<String> = rememberSaveable {mutableStateOf<String>(value = "")}
     val emailController: MutableState<String> = rememberSaveable{ mutableStateOf<String>(value = "") }

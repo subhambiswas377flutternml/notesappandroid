@@ -39,7 +39,7 @@ fun AuthState.isLoading(): Boolean{
 fun AuthState.userId(): Int?{
     when(this){
         is AuthState.Authenticated->{
-            return this.userId()
+            return this.authModel.id
         }else->{
             return null
         }

@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,7 +34,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.aero.notesapp.R
 import com.aero.notesapp.domain.model.NotesModel
@@ -48,10 +46,10 @@ import com.aero.notesapp.presentation.viewmodel.userId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavHostController){
+fun HomeScreen(navController: NavHostController,
+               authViewModel: AuthViewModel,
+               notesViewModel: NotesViewModel){
 
-    val notesViewModel: NotesViewModel = hiltViewModel<NotesViewModel>()
-    val authViewModel: AuthViewModel = hiltViewModel<AuthViewModel>()
 
     LaunchedEffect(Unit) {
         notesViewModel.getNotesByUser(authViewModel.state.value.userId())
