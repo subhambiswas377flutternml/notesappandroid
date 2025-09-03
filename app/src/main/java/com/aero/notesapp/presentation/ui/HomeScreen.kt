@@ -7,16 +7,25 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -50,12 +59,12 @@ fun HomeScreen(navController: NavHostController,
                authViewModel: AuthViewModel,
                notesViewModel: NotesViewModel){
 
+    val gridState = rememberLazyStaggeredGridState()
+
 
     LaunchedEffect(Unit) {
         notesViewModel.getNotesByUser(authViewModel.state.value.userId())
     }
-
-    val gridState = rememberLazyGridState()
 
     Scaffold(topBar = {
         CenterAlignedTopAppBar(
@@ -82,19 +91,15 @@ fun HomeScreen(navController: NavHostController,
            is NotesState.Loaded->{
                val notes: List<NotesModel> = (notesViewModel.state.value as NotesState.Loaded).notes
 
-               LazyVerticalGrid(
-                   modifier = Modifier.padding(innerPadding),
-                   columns = GridCells.Adaptive(minSize = 120.dp),
+               LazyVerticalStaggeredGrid(modifier = Modifier.padding(innerPadding),
+                   columns = StaggeredGridCells.Fixed(2),
                    state = gridState,
                    contentPadding = PaddingValues(horizontal = 22.dp, vertical = 26.dp),
-                   verticalArrangement = Arrangement.spacedBy(8.dp),
-                   horizontalArrangement = Arrangement.spacedBy(12.dp),
-               ){
+                   verticalItemSpacing = 8.dp,
+                   horizontalArrangement = Arrangement.spacedBy(12.dp),) {
+
                    items(notes){element->
-                       NoteCard(
-                           notesModel = element,
-                           navController = navController
-                       )
+                       NoteCard(notesModel = element, navController = navController)
                    }
                }
 

@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.aero.notesapp.core.AuthMode
+import com.aero.notesapp.domain.model.NotesModel
 import com.aero.notesapp.presentation.ui.AuthScrreen
 import com.aero.notesapp.presentation.ui.GetStartedScreen
 import com.aero.notesapp.presentation.ui.HomeScreen
@@ -17,7 +18,6 @@ import com.aero.notesapp.presentation.ui.SplashScreen
 import com.aero.notesapp.presentation.viewmodel.AuthViewModel
 import com.aero.notesapp.presentation.viewmodel.NotesViewModel
 import kotlinx.serialization.Serializable
-import okhttp3.Route
 
 object Routes{
     @Serializable
@@ -36,7 +36,7 @@ object Routes{
     data object HomeRoute
 
     @Serializable
-    data object NotesDetailRoute
+    data class NotesDetailRoute(val note: NotesModel)
 }
 
 @Composable
@@ -69,8 +69,9 @@ fun App(){
             HomeScreen(navController = navController, authViewModel=authViewModel, notesViewModel = notesViewModel)
         }
 
-        composable<Routes.NotesDetailRoute> {
-            NotesDetailScreen(navController = navController)
+        composable<Routes.NotesDetailRoute> {backStackEntry->
+            val args = backStackEntry.toRoute<Routes.NotesDetailRoute>()
+            NotesDetailScreen(navController = navController, note = args.note)
         }
     }
 }

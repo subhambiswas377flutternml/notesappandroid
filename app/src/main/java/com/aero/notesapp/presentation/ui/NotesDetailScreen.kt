@@ -28,7 +28,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -39,15 +38,16 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
 import androidx.navigation.NavHostController
 import com.aero.notesapp.R
+import com.aero.notesapp.domain.model.NotesModel
 import com.aero.notesapp.presentation.components.AssetSvgView
 import com.aero.notesapp.ui.theme.CustomFontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NotesDetailScreen(navController: NavHostController){
+fun NotesDetailScreen(navController: NavHostController, note: NotesModel){
 
-    val titleController: MutableState<String> = rememberSaveable{ mutableStateOf<String>(value = "Cerebral palsy sport") }
-    val descriptionController: MutableState<String> = rememberSaveable{ mutableStateOf<String>(value = "Cerebral palsy sport classification is a classification system used by sports that include people with cerebral palsy (CP) with different degrees of severity to compete fairly against each other and against others with different types of disabilities. In general, Cerebral Palsy-International Sports and Recreation Association (CP-ISRA) serves as the body in charge of classification for cerebral palsy sport, though some sports have their own classification systems which apply to CP sportspeople|") }
+    val titleController: MutableState<String> = rememberSaveable{ mutableStateOf<String>(value = note.title) }
+    val descriptionController: MutableState<String> = rememberSaveable{ mutableStateOf<String>(value = note.description) }
     val showPopupMenu: MutableState<Boolean> = rememberSaveable{ mutableStateOf<Boolean>(value = false) }
 
     Scaffold(topBar = {
