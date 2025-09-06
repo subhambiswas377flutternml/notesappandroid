@@ -37,7 +37,7 @@ fun NoteCard(notesModel: NotesModel,
         .background(color = colorResource(R.color.tertiary), shape = RoundedCornerShape(12.dp))
         .clickable(indication = ripple(color = colorResource(R.color.secondary)),
             interactionSource = remember { MutableInteractionSource() }) {
-            navController.navigate(Routes.NotesDetailRoute)
+            navController.navigate(Routes.NotesDetailRoute(noteId = notesModel.id))
         },
         ) {
         Column(modifier = Modifier.padding(16.dp)) {
