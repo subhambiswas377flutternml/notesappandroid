@@ -40,14 +40,18 @@ import androidx.navigation.NavHostController
 import com.aero.notesapp.R
 import com.aero.notesapp.domain.model.NotesModel
 import com.aero.notesapp.presentation.components.AssetSvgView
+import com.aero.notesapp.presentation.viewmodel.NotesViewModel
+import com.aero.notesapp.presentation.viewmodel.noteById
 import com.aero.notesapp.ui.theme.CustomFontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NotesDetailScreen(navController: NavHostController, note: NotesModel){
+fun NotesDetailScreen(navController: NavHostController, noteId: Int, notesViewModel: NotesViewModel){
 
-    val titleController: MutableState<String> = rememberSaveable{ mutableStateOf<String>(value = note.title) }
-    val descriptionController: MutableState<String> = rememberSaveable{ mutableStateOf<String>(value = note.description) }
+    val note: NotesModel? = notesViewModel.state.value.noteById(noteId)
+
+    val titleController: MutableState<String> = rememberSaveable{ mutableStateOf<String>(value = note?.title?:"") }
+    val descriptionController: MutableState<String> = rememberSaveable{ mutableStateOf<String>(value = note?.description?:"") }
     val showPopupMenu: MutableState<Boolean> = rememberSaveable{ mutableStateOf<Boolean>(value = false) }
 
     Scaffold(topBar = {

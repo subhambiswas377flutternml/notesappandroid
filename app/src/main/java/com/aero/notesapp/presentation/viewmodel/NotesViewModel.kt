@@ -21,6 +21,23 @@ sealed class NotesState{
     data class Error(val ex: Exception): NotesState()
 }
 
+fun NotesState.noteById(id: Int): NotesModel?{
+    when(this){
+        is NotesState.Loaded->{
+            val notesList: List<NotesModel> = this.notes
+            for(i: Int in 0 until notesList.size){
+                if(notesList[i].id==id){
+                    return notesList[i]
+                }
+            }
+            return null
+        }
+        else->{
+            return null
+        }
+    }
+}
+
 @HiltViewModel
 class NotesViewModel @Inject constructor(private val getNotesByUserUsecase: GetNotesByUserUsecase): ViewModel(){
     private val _state: MutableState<NotesState> = mutableStateOf<NotesState>(value = NotesState.Initial)
