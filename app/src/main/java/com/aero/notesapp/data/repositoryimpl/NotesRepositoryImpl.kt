@@ -1,5 +1,6 @@
 package com.aero.notesapp.data.repositoryimpl
 
+import com.aero.notesapp.core.request.UpdateNoteRequest
 import com.aero.notesapp.data.datasource.local.NotesLocalDataSource
 import com.aero.notesapp.data.datasource.remote.NotesRemoteDataSource
 import com.aero.notesapp.data.entity.local.toModel
@@ -15,6 +16,16 @@ class NotesRepositoryImpl(private val notesRemoteDataSource: NotesRemoteDataSour
         if(notesResponse.status==200){
             notesLocalDataSource.upsert(notesResponse.toLocalEntity())
             return notesResponse.toLocalEntity().map { e-> e.toModel() }.toList()
+        }else{
+            throw Exception()
+        }
+    }
+
+    override suspend fun updateNote(noteId: Int, updateNoteRequest: UpdateNoteRequest): List<NotesModel>{
+        val updateNotesResponse = notesRemoteDataSource.updateNote(noteId = noteId, updateNoteRequest = updateNoteRequest)
+        if(updateNotesResponse.status==200){
+            notesLocalDataSource.upsert(updateNotesResponse.toLocalEntity())
+            return updateNotesResponse.toLocalEntity().map { element-> element.toModel()  }.toList()
         }else{
             throw Exception()
         }

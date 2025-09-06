@@ -8,7 +8,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.aero.notesapp.core.AuthMode
-import com.aero.notesapp.domain.model.NotesModel
 import com.aero.notesapp.presentation.ui.AuthScrreen
 import com.aero.notesapp.presentation.ui.GetStartedScreen
 import com.aero.notesapp.presentation.ui.HomeScreen

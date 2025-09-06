@@ -5,11 +5,16 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aero.notesapp.core.request.UpdateNoteRequest
 import com.aero.notesapp.domain.model.NotesModel
 import com.aero.notesapp.domain.usecase.notes.GetNotesByUserUsecase
+import com.aero.notesapp.domain.usecase.notes.UpdateNoteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -21,13 +26,28 @@ sealed class NotesState{
     data class Error(val ex: Exception): NotesState()
 }
 
-fun NotesState.noteById(id: Int): NotesModel? {
+sealed class NotesFlowState{
+    data object NavigateBack: NotesFlowState()
+}
+
+fun NotesState.isLoading(): Boolean{
+    when(this){
+        NotesState.Loading->{
+            return true
+        }
+        else->{
+            return false
+        }
+    }
+}
+
+fun NotesState.noteById(id: Int): NotesModel?{
     when(this){
         is NotesState.Loaded->{
-            val notes: List<NotesModel> = this.notes
-            for(i:Int in 0 until notes.size){
-                if(notes[i].id==id){
-                    return notes[i]
+            val notesList: List<NotesModel> = this.notes
+            for(i: Int in 0 until notesList.size){
+                if(notesList[i].id==id){
+                    return notesList[i]
                 }
             }
             return null
@@ -39,9 +59,14 @@ fun NotesState.noteById(id: Int): NotesModel? {
 }
 
 @HiltViewModel
-class NotesViewModel @Inject constructor(private val getNotesByUserUsecase: GetNotesByUserUsecase): ViewModel(){
+class NotesViewModel @Inject constructor(private val getNotesByUserUsecase: GetNotesByUserUsecase,
+    private val updateNoteUseCase: UpdateNoteUseCase): ViewModel(){
+
     private val _state: MutableState<NotesState> = mutableStateOf<NotesState>(value = NotesState.Initial)
     val state: State<NotesState> = _state
+
+    private val _flowState: MutableSharedFlow<NotesFlowState> = MutableSharedFlow<NotesFlowState>(extraBufferCapacity = 1)
+    val flowState: SharedFlow<NotesFlowState> = _flowState.asSharedFlow()
 
     val exceptionHandler = CoroutineExceptionHandler{coroutineContext, throwable->
         _state.value = NotesState.Error(ex = Exception())
@@ -62,6 +87,19 @@ class NotesViewModel @Inject constructor(private val getNotesByUserUsecase: GetN
                         throw ex
                     }
                 }
+            }
+        }
+    }
+
+    fun updateNote(noteId: Int, updateNoteRequest: UpdateNoteRequest){
+        _state.value = NotesState.Loading
+        viewModelScope.launch(exceptionHandler) {
+            try{
+                val updateResponse = updateNoteUseCase(noteId = noteId, updateNoteRequest=updateNoteRequest)
+                _state.value = NotesState.Loaded(notes = updateResponse)
+                _flowState.emit(value = NotesFlowState.NavigateBack)
+            }catch(ex: Exception){
+                throw ex
             }
         }
     }
