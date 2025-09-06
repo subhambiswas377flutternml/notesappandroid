@@ -15,6 +15,9 @@ abstract class NotesLocalDataSource {
     @Query("Select * from Notes")
     abstract fun getAll(): Flow<List<NotesLocalEntity>>
 
-    @Delete
-    abstract suspend fun delete(note: NotesLocalEntity)
+    @Query("Delete from Notes where id=:noteId")
+    abstract suspend fun deleteByNoteId(noteId:Int)
+
+    @Query("Delete from Notes")
+    abstract suspend fun clearNotesTable()
 }

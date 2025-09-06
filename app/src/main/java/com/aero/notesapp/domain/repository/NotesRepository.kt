@@ -9,4 +9,5 @@ interface NotesRepository {
     suspend fun updateNote(noteId:Int, updateNoteRequest: UpdateNoteRequest): List<NotesModel>
     suspend fun addNoteByUser(addNoteRequest: AddNoteRequest): List<NotesModel>
     suspend fun deleteByNoteId(noteId: Int): List<NotesModel>
+    suspend fun fetchNotesFromLocal(): List<NotesModel>
 }

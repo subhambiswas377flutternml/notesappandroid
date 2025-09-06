@@ -8,6 +8,10 @@ import com.aero.notesapp.data.entity.local.toModel
 import com.aero.notesapp.data.entity.remote.toLocalEntity
 import com.aero.notesapp.domain.model.NotesModel
 import com.aero.notesapp.domain.repository.NotesRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 
 class NotesRepositoryImpl(private val notesRemoteDataSource: NotesRemoteDataSource,
     private val notesLocalDataSource: NotesLocalDataSource): NotesRepository {
@@ -15,6 +19,7 @@ class NotesRepositoryImpl(private val notesRemoteDataSource: NotesRemoteDataSour
     override suspend fun getNotesByUser(userId: Int): List<NotesModel>{
         val notesResponse = notesRemoteDataSource.getNotesByUser(userId = userId)
         if(notesResponse.status==200){
+            notesLocalDataSource.clearNotesTable()
             notesLocalDataSource.upsert(notesResponse.toLocalEntity())
             return notesResponse.toLocalEntity().map { e-> e.toModel() }.toList()
         }else{
@@ -45,10 +50,15 @@ class NotesRepositoryImpl(private val notesRemoteDataSource: NotesRemoteDataSour
     override suspend fun deleteByNoteId(noteId: Int): List<NotesModel>{
         val postDeleteResponse = notesRemoteDataSource.deleteByNoteId(noteId = noteId)
         if(postDeleteResponse.status==200){
-            notesLocalDataSource.upsert(postDeleteResponse.toLocalEntity())
+            notesLocalDataSource.deleteByNoteId(noteId = noteId)
             return postDeleteResponse.toLocalEntity().map { element-> element.toModel() }.toList()
         }else{
             throw Exception()
         }
+    }
+
+    override suspend fun fetchNotesFromLocal(): List<NotesModel> {
+        val localNotes = notesLocalDataSource.getAll()
+        return localNotes.first().map { element-> element.toModel() }.toList()
     }
 }
