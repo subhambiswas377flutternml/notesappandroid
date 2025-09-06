@@ -1,12 +1,10 @@
 package com.aero.notesapp.presentation.ui
 
-import android.widget.PopupMenu
-import android.widget.Space
-import androidx.compose.foundation.background
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,12 +22,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -38,9 +39,12 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
 import androidx.navigation.NavHostController
 import com.aero.notesapp.R
+import com.aero.notesapp.core.request.UpdateNoteRequest
 import com.aero.notesapp.domain.model.NotesModel
 import com.aero.notesapp.presentation.components.AssetSvgView
+import com.aero.notesapp.presentation.viewmodel.NotesFlowState
 import com.aero.notesapp.presentation.viewmodel.NotesViewModel
+import com.aero.notesapp.presentation.viewmodel.isLoading
 import com.aero.notesapp.presentation.viewmodel.noteById
 import com.aero.notesapp.ui.theme.CustomFontFamily
 
@@ -53,6 +57,19 @@ fun NotesDetailScreen(navController: NavHostController, noteId: Int, notesViewMo
     val titleController: MutableState<String> = rememberSaveable{ mutableStateOf<String>(value = note?.title?:"") }
     val descriptionController: MutableState<String> = rememberSaveable{ mutableStateOf<String>(value = note?.description?:"") }
     val showPopupMenu: MutableState<Boolean> = rememberSaveable{ mutableStateOf<Boolean>(value = false) }
+
+    val appContext: Context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        notesViewModel.flowState.collect{event->
+            when(event){
+                is NotesFlowState.NavigateBack->{
+                    Toast.makeText(appContext, "Success", Toast.LENGTH_LONG).show()
+                    navController.navigateUp()
+                }
+            }
+        }
+    }
 
     Scaffold(topBar = {
         CenterAlignedTopAppBar(
@@ -85,43 +102,67 @@ fun NotesDetailScreen(navController: NavHostController, noteId: Int, notesViewMo
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     DropdownMenuItem(onClick = {
-                        showPopupMenu.value=false
+
+                        if(note?.id!=null||titleController.value.trim().isNotEmpty()||descriptionController.value.trim().isNotEmpty()){
+                            notesViewModel.updateNote(noteId = note?.id?:1,
+                                updateNoteRequest = UpdateNoteRequest(
+                                    title = titleController.value.trim(),
+                                    description = descriptionController.value.trim()
+                                )
+                            )
+                            showPopupMenu.value=false
+                        }
                     }, text = {
                         Text(text = "Save")
                     })
                 }
             }, colors = TopAppBarDefaults.topAppBarColors().copy(containerColor = Color.Transparent))
     }, containerColor = colorResource(R.color.primary)) { innerPadding->
-        Column(modifier = Modifier
-            .padding(innerPadding)
-            .padding(horizontal = 24.dp)
-            .fillMaxSize(),
-            horizontalAlignment = Alignment.Start
+        Box {
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .padding(horizontal = 24.dp)
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.Start
             ) {
 
-            Spacer(modifier = Modifier.height(16.dp))
-            BasicTextField(modifier = Modifier.fillMaxWidth(),
-                value = titleController.value, onValueChange = {
-                    titleController.value = it
-                },
-                textStyle = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Black, color = colorResource(R.color.textBlack),
-                    fontFamily = CustomFontFamily.fontNunito))
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            BasicTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = descriptionController.value,
-                onValueChange = {
-                    descriptionController.value=it
-                },
-                textStyle = TextStyle(
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = colorResource(R.color.textBrown),
-                    fontFamily = CustomFontFamily.fontNunito
+                Spacer(modifier = Modifier.height(16.dp))
+                BasicTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = titleController.value, onValueChange = {
+                        titleController.value = it
+                    },
+                    textStyle = TextStyle(
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Black,
+                        color = colorResource(R.color.textBlack),
+                        fontFamily = CustomFontFamily.fontNunito
+                    )
                 )
-            )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                BasicTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = descriptionController.value,
+                    onValueChange = {
+                        descriptionController.value = it
+                    },
+                    textStyle = TextStyle(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = colorResource(R.color.textBrown),
+                        fontFamily = CustomFontFamily.fontNunito
+                    )
+                )
+            };
+
+            if(notesViewModel.state.value.isLoading()){
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(color = colorResource(R.color.secondary))
+                }
+            };
         }
     }
 }
