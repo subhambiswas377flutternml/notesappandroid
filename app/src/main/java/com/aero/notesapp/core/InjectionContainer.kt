@@ -15,6 +15,8 @@ import com.aero.notesapp.domain.repository.NotesRepository
 import com.aero.notesapp.domain.usecase.auth.CheckAuthUsecase
 import com.aero.notesapp.domain.usecase.auth.LoginUsecase
 import com.aero.notesapp.domain.usecase.auth.SignupUsecase
+import com.aero.notesapp.domain.usecase.notes.AddNoteByUserUseCase
+import com.aero.notesapp.domain.usecase.notes.DeleteByNoteIdUseCase
 import com.aero.notesapp.domain.usecase.notes.GetNotesByUserUsecase
 import com.aero.notesapp.domain.usecase.notes.UpdateNoteUseCase
 import dagger.Module
@@ -107,5 +109,17 @@ object InjectionContainer{
     @Singleton
     fun provideUpdateNoteUseCase(notesRepository: NotesRepository): UpdateNoteUseCase{
         return UpdateNoteUseCase(notesRepository = notesRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAddNoteByUserUseCase(notesRepository: NotesRepository): AddNoteByUserUseCase{
+        return AddNoteByUserUseCase(notesRepository=notesRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDeleteByNoteIdUseCase(notesRepository: NotesRepository): DeleteByNoteIdUseCase{
+        return DeleteByNoteIdUseCase(notesRepository = notesRepository)
     }
 }

@@ -1,6 +1,7 @@
 package com.aero.notesapp.data.repositoryimpl
 
-import com.aero.notesapp.core.request.UpdateNoteRequest
+import com.aero.notesapp.core.request.note.AddNoteRequest
+import com.aero.notesapp.core.request.note.UpdateNoteRequest
 import com.aero.notesapp.data.datasource.local.NotesLocalDataSource
 import com.aero.notesapp.data.datasource.remote.NotesRemoteDataSource
 import com.aero.notesapp.data.entity.local.toModel
@@ -26,6 +27,26 @@ class NotesRepositoryImpl(private val notesRemoteDataSource: NotesRemoteDataSour
         if(updateNotesResponse.status==200){
             notesLocalDataSource.upsert(updateNotesResponse.toLocalEntity())
             return updateNotesResponse.toLocalEntity().map { element-> element.toModel()  }.toList()
+        }else{
+            throw Exception()
+        }
+    }
+
+    override suspend fun addNoteByUser(addNoteRequest: AddNoteRequest): List<NotesModel>{
+        val addResponse = notesRemoteDataSource.addNoteByUser(addNoteRequest = addNoteRequest)
+        if(addResponse.status==200){
+            notesLocalDataSource.upsert(addResponse.toLocalEntity())
+            return addResponse.toLocalEntity().map { element-> element.toModel() }.toList()
+        }else{
+            throw Exception()
+        }
+    }
+
+    override suspend fun deleteByNoteId(noteId: Int): List<NotesModel>{
+        val postDeleteResponse = notesRemoteDataSource.deleteByNoteId(noteId = noteId)
+        if(postDeleteResponse.status==200){
+            notesLocalDataSource.upsert(postDeleteResponse.toLocalEntity())
+            return postDeleteResponse.toLocalEntity().map { element-> element.toModel() }.toList()
         }else{
             throw Exception()
         }

@@ -5,8 +5,12 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.aero.notesapp.core.request.UpdateNoteRequest
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.aero.notesapp.core.request.note.AddNoteRequest
+import com.aero.notesapp.core.request.note.UpdateNoteRequest
 import com.aero.notesapp.domain.model.NotesModel
+import com.aero.notesapp.domain.usecase.notes.AddNoteByUserUseCase
+import com.aero.notesapp.domain.usecase.notes.DeleteByNoteIdUseCase
 import com.aero.notesapp.domain.usecase.notes.GetNotesByUserUsecase
 import com.aero.notesapp.domain.usecase.notes.UpdateNoteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -60,7 +64,9 @@ fun NotesState.noteById(id: Int): NotesModel?{
 
 @HiltViewModel
 class NotesViewModel @Inject constructor(private val getNotesByUserUsecase: GetNotesByUserUsecase,
-    private val updateNoteUseCase: UpdateNoteUseCase): ViewModel(){
+    private val updateNoteUseCase: UpdateNoteUseCase,
+    private val addNoteByUserUseCase: AddNoteByUserUseCase,
+    private val deleteByNoteIdUseCase: DeleteByNoteIdUseCase): ViewModel(){
 
     private val _state: MutableState<NotesState> = mutableStateOf<NotesState>(value = NotesState.Initial)
     val state: State<NotesState> = _state
@@ -98,6 +104,36 @@ class NotesViewModel @Inject constructor(private val getNotesByUserUsecase: GetN
                 val updateResponse = updateNoteUseCase(noteId = noteId, updateNoteRequest=updateNoteRequest)
                 _state.value = NotesState.Loaded(notes = updateResponse)
                 _flowState.emit(value = NotesFlowState.NavigateBack)
+            }catch(ex: Exception){
+                throw ex
+            }
+        }
+    }
+
+    fun addNoteByUser(userId: Int, title: String, description:String){
+        _state.value=NotesState.Loading
+        viewModelScope.launch(exceptionHandler) {
+            try{
+                val notesList = addNoteByUserUseCase(addNoteRequest = AddNoteRequest(
+                    userId = userId,
+                    title = title,
+                    description=description,
+                ))
+                _state.value=NotesState.Loaded(notes = notesList)
+                _flowState.emit(NotesFlowState.NavigateBack)
+            }catch(ex: Exception){
+                throw ex
+            }
+        }
+    }
+
+    fun deleteByNoteId(noteId: Int){
+        _state.value=NotesState.Loading
+        viewModelScope.launch(exceptionHandler) {
+            try{
+                val notesList = deleteByNoteIdUseCase(noteId = noteId)
+                _state.value=NotesState.Loaded(notes = notesList)
+                _flowState.emit(NotesFlowState.NavigateBack)
             }catch(ex: Exception){
                 throw ex
             }

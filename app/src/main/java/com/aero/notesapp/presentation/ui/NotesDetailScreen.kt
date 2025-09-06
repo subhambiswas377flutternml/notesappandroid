@@ -1,6 +1,7 @@
 package com.aero.notesapp.presentation.ui
 
 import android.content.Context
+import android.provider.CalendarContract.Colors
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -39,20 +40,22 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
 import androidx.navigation.NavHostController
 import com.aero.notesapp.R
-import com.aero.notesapp.core.request.UpdateNoteRequest
+import com.aero.notesapp.core.request.note.UpdateNoteRequest
 import com.aero.notesapp.domain.model.NotesModel
 import com.aero.notesapp.presentation.components.AssetSvgView
+import com.aero.notesapp.presentation.viewmodel.AuthViewModel
 import com.aero.notesapp.presentation.viewmodel.NotesFlowState
 import com.aero.notesapp.presentation.viewmodel.NotesViewModel
 import com.aero.notesapp.presentation.viewmodel.isLoading
 import com.aero.notesapp.presentation.viewmodel.noteById
+import com.aero.notesapp.presentation.viewmodel.userId
 import com.aero.notesapp.ui.theme.CustomFontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NotesDetailScreen(navController: NavHostController, noteId: Int, notesViewModel: NotesViewModel){
+fun NotesDetailScreen(navController: NavHostController, noteId: Int?, notesViewModel: NotesViewModel, authViewModel: AuthViewModel, createNote: Boolean){
 
-    val note: NotesModel? = notesViewModel.state.value.noteById(noteId)
+    val note: NotesModel? = notesViewModel.state.value.noteById(noteId?:0)
 
     val titleController: MutableState<String> = rememberSaveable{ mutableStateOf<String>(value = note?.title?:"") }
     val descriptionController: MutableState<String> = rememberSaveable{ mutableStateOf<String>(value = note?.description?:"") }
@@ -75,7 +78,7 @@ fun NotesDetailScreen(navController: NavHostController, noteId: Int, notesViewMo
         CenterAlignedTopAppBar(
             modifier = Modifier.padding(horizontal = 24.dp),
             title = {
-            Text(text = "Edit Note",
+            Text(text = if(createNote) "Create Mote" else "Edit Note",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Black,
                 color = colorResource(R.color.textBlack)
@@ -104,17 +107,44 @@ fun NotesDetailScreen(navController: NavHostController, noteId: Int, notesViewMo
                     DropdownMenuItem(onClick = {
 
                         if(note?.id!=null||titleController.value.trim().isNotEmpty()||descriptionController.value.trim().isNotEmpty()){
-                            notesViewModel.updateNote(noteId = note?.id?:1,
-                                updateNoteRequest = UpdateNoteRequest(
-                                    title = titleController.value.trim(),
-                                    description = descriptionController.value.trim()
+                            if(createNote){
+                                if(authViewModel.state.value.userId()!=null){
+                                    notesViewModel.addNoteByUser(
+                                        userId = authViewModel.state.value.userId()!!,
+                                        title = titleController.value.trim(),
+                                        description = descriptionController.value.trim()
+                                    )
+                                }else{
+                                    Toast.makeText(appContext, "User couldn't be found !", Toast.LENGTH_LONG).show()
+                                }
+                            }else{
+                                notesViewModel.updateNote(noteId = note?.id?:1,
+                                    updateNoteRequest = UpdateNoteRequest(
+                                        title = titleController.value.trim(),
+                                        description = descriptionController.value.trim()
+                                    )
                                 )
-                            )
+                            }
                             showPopupMenu.value=false
+                        }else{
+                            Toast.makeText(appContext, "Title and Description can't be empty !", Toast.LENGTH_LONG).show()
                         }
                     }, text = {
                         Text(text = "Save")
-                    })
+                    });
+
+                    if(!createNote){
+                        DropdownMenuItem(onClick = {
+                            if(noteId!=null){
+                                notesViewModel.deleteByNoteId(noteId)
+                            }else{
+                                Toast.makeText(appContext, "Note couldn't be deleted !", Toast.LENGTH_LONG).show()
+                            }
+                        }, text = {
+                            Text(text = "Delete",
+                                color = Color.Red)
+                        })
+                    }
                 }
             }, colors = TopAppBarDefaults.topAppBarColors().copy(containerColor = Color.Transparent))
     }, containerColor = colorResource(R.color.primary)) { innerPadding->
@@ -133,6 +163,19 @@ fun NotesDetailScreen(navController: NavHostController, noteId: Int, notesViewMo
                     value = titleController.value, onValueChange = {
                         titleController.value = it
                     },
+                    decorationBox = {innerTextField ->
+                        if(titleController.value.trim().isEmpty()){
+                            Text("Title",
+                                style = TextStyle(
+                                    fontSize = 24.sp,
+                                    fontWeight = FontWeight.Black,
+                                    color = Color.Gray,
+                                    fontFamily = CustomFontFamily.fontNunito
+                                )
+                                )
+                        }
+                        innerTextField()
+                    },
                     textStyle = TextStyle(
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Black,
@@ -148,6 +191,18 @@ fun NotesDetailScreen(navController: NavHostController, noteId: Int, notesViewMo
                     value = descriptionController.value,
                     onValueChange = {
                         descriptionController.value = it
+                    },
+                    decorationBox = {innerTextField ->
+                        if(descriptionController.value.trim().isEmpty()){
+                            Text("description......",
+                                style = TextStyle(
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Gray,
+                                    fontFamily = CustomFontFamily.fontNunito
+                                ))
+                        }
+                        innerTextField()
                     },
                     textStyle = TextStyle(
                         fontSize = 18.sp,

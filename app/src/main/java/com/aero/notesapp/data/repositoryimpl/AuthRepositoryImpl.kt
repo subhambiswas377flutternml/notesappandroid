@@ -1,7 +1,7 @@
 package com.aero.notesapp.data.repositoryimpl
 
-import com.aero.notesapp.core.request.LoginRequest
-import com.aero.notesapp.core.request.SignupRequest
+import com.aero.notesapp.core.request.auth.LoginRequest
+import com.aero.notesapp.core.request.auth.SignupRequest
 import com.aero.notesapp.data.datasource.local.AuthLocalDataSource
 import com.aero.notesapp.data.datasource.remote.AuthRemoteDataSource
 import com.aero.notesapp.data.entity.local.toModel

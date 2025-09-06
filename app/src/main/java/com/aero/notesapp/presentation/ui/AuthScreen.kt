@@ -33,8 +33,8 @@ import androidx.navigation.NavHostController
 import com.aero.notesapp.R
 import com.aero.notesapp.Routes
 import com.aero.notesapp.core.AuthMode
-import com.aero.notesapp.core.request.LoginRequest
-import com.aero.notesapp.core.request.SignupRequest
+import com.aero.notesapp.core.request.auth.LoginRequest
+import com.aero.notesapp.core.request.auth.SignupRequest
 import com.aero.notesapp.presentation.components.AssetSvgView
 import com.aero.notesapp.presentation.components.CustomInputField
 import com.aero.notesapp.presentation.components.PrimaryButton
@@ -127,7 +127,8 @@ fun AuthScrreen(navController: NavHostController, authMode: AuthMode, authViewMo
                            authViewModel.login(loginRequest = LoginRequest(
                                userName = emailController.value.trim(),
                                password = passwordController.value.trim()
-                           ))
+                           )
+                           )
                        }else{
                            Toast.makeText(appContext, "Credentials can't be empty", Toast.LENGTH_LONG).show()
                        }
@@ -137,9 +138,11 @@ fun AuthScrreen(navController: NavHostController, authMode: AuthMode, authViewMo
                            passwordController.value.trim().isEmpty()){
                            Toast.makeText(appContext, "Signup credentials can't be empty !", Toast.LENGTH_LONG).show()
                        }else{
-                           authViewModel.singup(SignupRequest(name = nameController.value.trim(),
+                           authViewModel.singup(
+                               SignupRequest(name = nameController.value.trim(),
                                userName = emailController.value.trim(),
-                               password = passwordController.value.trim()))
+                               password = passwordController.value.trim())
+                           )
                        }
                    }
                 }

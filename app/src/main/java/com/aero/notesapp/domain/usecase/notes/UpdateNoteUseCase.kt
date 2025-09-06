@@ -1,6 +1,6 @@
 package com.aero.notesapp.domain.usecase.notes
 
-import com.aero.notesapp.core.request.UpdateNoteRequest
+import com.aero.notesapp.core.request.note.UpdateNoteRequest
 import com.aero.notesapp.domain.model.NotesModel
 import com.aero.notesapp.domain.repository.NotesRepository
 

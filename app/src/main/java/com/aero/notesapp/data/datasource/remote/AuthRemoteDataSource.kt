@@ -1,7 +1,7 @@
 package com.aero.notesapp.data.datasource.remote
 
-import com.aero.notesapp.core.request.LoginRequest
-import com.aero.notesapp.core.request.SignupRequest
+import com.aero.notesapp.core.request.auth.LoginRequest
+import com.aero.notesapp.core.request.auth.SignupRequest
 import com.aero.notesapp.data.entity.remote.AuthDto
 import retrofit2.http.Body
 import retrofit2.http.HeaderMap

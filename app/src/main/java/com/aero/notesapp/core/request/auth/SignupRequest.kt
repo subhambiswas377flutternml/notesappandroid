@@ -1,4 +1,4 @@
-package com.aero.notesapp.core.request
+package com.aero.notesapp.core.request.auth
 
 data class SignupRequest(
     val name:String,

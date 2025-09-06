@@ -35,7 +35,7 @@ object Routes{
     data object HomeRoute
 
     @Serializable
-    data class NotesDetailRoute(val noteId: Int)
+    data class NotesDetailRoute(val noteId: Int?=null, val createNote: Boolean=false)
 }
 
 @Composable
@@ -70,7 +70,7 @@ fun App(){
 
         composable<Routes.NotesDetailRoute> {backStackEntry->
             val args = backStackEntry.toRoute<Routes.NotesDetailRoute>()
-            NotesDetailScreen(navController = navController, noteId = args.noteId, notesViewModel = notesViewModel)
+            NotesDetailScreen(navController = navController, noteId = args.noteId, notesViewModel = notesViewModel, authViewModel=authViewModel, createNote = args.createNote)
         }
     }
 }

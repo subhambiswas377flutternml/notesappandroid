@@ -5,8 +5,8 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.aero.notesapp.core.request.LoginRequest
-import com.aero.notesapp.core.request.SignupRequest
+import com.aero.notesapp.core.request.auth.LoginRequest
+import com.aero.notesapp.core.request.auth.SignupRequest
 import com.aero.notesapp.domain.model.UserModel
 import com.aero.notesapp.domain.usecase.auth.CheckAuthUsecase
 import com.aero.notesapp.domain.usecase.auth.LoginUsecase

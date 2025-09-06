@@ -26,9 +26,13 @@ import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -45,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.aero.notesapp.R
+import com.aero.notesapp.Routes
 import com.aero.notesapp.domain.model.NotesModel
 import com.aero.notesapp.presentation.components.AssetSvgView
 import com.aero.notesapp.presentation.components.NoteCard
@@ -80,7 +85,17 @@ fun HomeScreen(navController: NavHostController,
                 AssetSvgView(imageUrl = stringResource(R.string.search_icon), modifier = Modifier.height(20.dp).width(20.dp))
             }
         )
-    }, containerColor = colorResource(R.color.primary)) { innerPadding->
+    }, containerColor = colorResource(R.color.primary),
+        floatingActionButton = {
+            FloatingActionButton(onClick = {
+                navController.navigate(Routes.NotesDetailRoute(createNote = true))
+            },
+                containerColor = colorResource(R.color.secondary),
+                contentColor = colorResource(R.color.tertiary)
+            ) {
+                Icon(Icons.Filled.Add, contentDescription = "")
+            }
+        }) { innerPadding->
        when(notesViewModel.state.value){
            NotesState.Initial->{}
            NotesState.Loading->{
