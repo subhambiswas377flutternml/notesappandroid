@@ -4,3 +4,8 @@ enum class AuthMode{
     SignUp,
     Login,
 }
+
+enum class UserSex{
+    Male,
+    Female,
+}

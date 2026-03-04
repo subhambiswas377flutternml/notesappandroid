@@ -8,4 +8,9 @@
     <string name="arrow_back">icons/arrow_back.svg</string>
     <string name="more_vert">icons/more_vert.svg</string>
     <string name="splash_icon">images/notely_icon.png</string>
+    <string name="male_avatar">images/male_avatar.png</string>
+    <string name="female_avatar">images/female_avatar.png</string>
+    <string name="edit_icon">icons/edit_icon.svg</string>
+    <string name="logout_icon">icons/logout_icon.svg</string>
+    <string name="arrow_forward">icons/arrow_forward.svg</string>
 </resources>

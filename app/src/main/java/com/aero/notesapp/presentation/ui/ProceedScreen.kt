@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.aero.notesapp.R
 import com.aero.notesapp.Routes
+import com.aero.notesapp.core.AuthMode
 import com.aero.notesapp.presentation.components.AssetSvgView
 import com.aero.notesapp.presentation.components.PrimaryButton
 
@@ -64,7 +65,7 @@ fun ProceedScreen(navController: NavHostController){
             Spacer(modifier = Modifier.height(77.dp))
 
             PrimaryButton(onClick = {
-                navController.navigate(Routes.GetStartedRoute)
+                navController.navigate(Routes.AuthRoute(authMode = AuthMode.Login))
             }, buttonText = "Proceed")
         }
     }

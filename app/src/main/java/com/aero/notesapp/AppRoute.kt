@@ -23,7 +23,7 @@ object Routes{
     data object SplashRoute
 
     @Serializable
-    data object GetStartedRoute
+    data class GetStartedRoute(val userSex: String?=null)
 
     @Serializable
     data object ProceedRoute
@@ -51,8 +51,9 @@ fun App(){
             SplashScreen(navController = navController, authViewModel = authViewModel)
         }
 
-        composable<Routes.GetStartedRoute> {
-            GetStartedScreen(navController = navController)
+        composable<Routes.GetStartedRoute> {backStackEntry->
+            val args = backStackEntry.toRoute<Routes.GetStartedRoute>()
+            GetStartedScreen(navController = navController, userSex = args.userSex)
         }
 
         composable<Routes.ProceedRoute> {

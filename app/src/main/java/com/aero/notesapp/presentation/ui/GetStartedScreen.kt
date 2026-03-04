@@ -31,7 +31,7 @@ import com.aero.notesapp.presentation.components.PrimaryTextButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GetStartedScreen(navController: NavHostController){
+fun GetStartedScreen(navController: NavHostController, userSex: String?=null){
     Scaffold(containerColor = colorResource(R.color.primary),
         topBar = { CenterAlignedTopAppBar(title = {
             AssetSvgView(imageUrl = stringResource(R.string.notely_name),

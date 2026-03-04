@@ -45,7 +45,9 @@ import com.aero.notesapp.presentation.viewmodel.isLoading
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AuthScrreen(navController: NavHostController, authMode: AuthMode, authViewModel: AuthViewModel){
+fun AuthScrreen(navController: NavHostController,
+                authMode: AuthMode,
+                authViewModel: AuthViewModel){
 
     val nameController: MutableState<String> = rememberSaveable {mutableStateOf<String>(value = "")}
     val emailController: MutableState<String> = rememberSaveable{ mutableStateOf<String>(value = "") }
@@ -141,7 +143,7 @@ fun AuthScrreen(navController: NavHostController, authMode: AuthMode, authViewMo
                            authViewModel.singup(
                                SignupRequest(name = nameController.value.trim(),
                                userName = emailController.value.trim(),
-                               password = passwordController.value.trim())
+                               password = passwordController.value.trim()),
                            )
                        }
                    }

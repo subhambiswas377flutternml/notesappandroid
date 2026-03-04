@@ -13,7 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import java.io.IOException
 
 @Composable
-fun AssetImageView(imagePath: String, modifier:Modifier = Modifier) {
+fun AssetImageView(imagePath: String, modifier:Modifier = Modifier, contentScale: ContentScale=ContentScale.FillBounds) {
     val context = LocalContext.current
 
     val imageBitmap: ImageBitmap? =  try {
@@ -31,7 +31,7 @@ fun AssetImageView(imagePath: String, modifier:Modifier = Modifier) {
             bitmap = it,
             contentDescription = null,
             modifier = modifier,
-            contentScale = ContentScale.FillBounds,
+            contentScale = contentScale,
         )
     } ?: Text("Image not found")
 }
